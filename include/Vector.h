@@ -6,9 +6,9 @@
 #include <cmath>
 #include <concepts>
 #include <cstring>
-#include <stdexcept>
 #include <format>
 #include <initializer_list>
+#include <stdexcept>
 #include <sstream>
 #include <type_traits>
 
@@ -17,6 +17,7 @@
 namespace math {
 
     template<typename T, std::size_t N>
+        requires (N > 0) && (std::integral<T> || std::floating_point<T>)
     class Vector {
     public:
         Vector() {
@@ -103,9 +104,15 @@ namespace math {
             return norm;
         }
 
+        Vector<T, N> UnitVector() const {
+            return (*this) / (Length());
+        }
+
         float Length() const {
             return std::sqrt(LengthSquared());
         }
+
+
 
         std::string toString() const {
             std::string type = std::is_same_v<T, int>    ? "int" :
@@ -185,6 +192,37 @@ namespace math {
 
         return true;
     }
+
+    template<typename T, std::size_t N>
+    float Dot(const Vector<T, N>& v1, const Vector<T, N>& v2) {
+        float dot_product = 0.0f;
+
+        for (std::size_t i = 0; i < N; i++) {
+            dot_product += v1[i] * v2[i];
+        }
+
+        return dot_product;
+    }
+
+    template<typename T>
+    Vector<T, 3> Cross(const Vector<T, 3>& v1, const Vector<T, 3>& v2) {
+        Vector<T, 3> cross_product = {
+                v1[1] * v2[2] - v1[2] * v2[1],
+                v2[0] * v1[2] - v1[0] * v2[2],
+                v1[0] * v2[1] - v1[1] * v2[0]
+        };
+
+        return cross_product;
+    }
+
+    template<typename T, std::size_t N>
+    float Angle(const Vector<T, N>& v1, const Vector<T, N>& v2) {
+        float dot_product = Dot(v1, v2);
+        float cos_theta = dot_product / (v1.Length() * v2.Length());
+
+        return acos(cos_theta);
+    }
+
 
 
     using Vec2d = Vector<double, 2>;
