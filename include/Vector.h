@@ -1,50 +1,115 @@
 #ifndef PATHTRACER_VECTOR_H
 #define PATHTRACER_VECTOR_H
 
-#if defined(__aarch64__)
-    #include <arm_neon.h>
-#elif defined(__x86_64__)
-    #include <immintrin.h>
-#endif
 
 #include <array>
+#include <initializer_list>
+#include <format>
 
 namespace math {
 
-    class Vec4 {
+    template<typename T, std::size_t N>
+    class Vector {
     public:
-        explicit Vec4(double d) : data_{d,d,d,d} {}
-        explicit Vec4(double x, double y, double z, double h) : data_{x,y,z,h} {}
-
-        Vec4 operator+(const Vec4& other) {
-
+        Vector() {
+            std::memset(data_.data(), 0, sizeof (T) * N);
         }
 
-        Vec4 operator-(const Vec4& other) {
+        Vector(std::initializer_list<T> elems) {
+            if (elems.size() != N)
+                throw std::logic_error(
+                        std::format("Vector of size {} cannot be initialized with {} elements", N, elems.size())
+                );
 
+            for (int index = 0; auto& elem : elems) {
+                data_[index] = elems;
+                index++;
+            }
         }
 
+        T operator[](std::size_t index) const {
+            if (index < 0 || index >= N)
+                throw std::logic_error(
+                    std::format("Vector of size {} cannot be accessed at index {}", N, index)
+                );
+
+            return data_[index];
+        }
+
+        T& operator[](std::size_t index) {
+            if (index < 0 || index >= N)
+                throw std::logic_error(
+                        std::format("Vector of size {} cannot be accessed at index {}", N, index)
+            );
+
+            return data_[index];
+        }
+
+        Vector<T, N>& operator+=(Vector<T, N>& other) {
+            for (std::size_t i = 0; i < N; i++) {
+                data_[i] += other.data_[i];
+            }
+
+            return *this;
+        }
+
+        Vector<T, N>& operator-=(Vector<T, N>& other) {
+            for (std::size_t i = 0; i < N; i++) {
+                data_[i] -= other.data_[i];
+            }
+
+            return *this;
+        }
+
+        Vector<T, N>& operator*=(float t) {
+            T t_cast = static_cast<T>(t);
+
+            for (std::size_t i = 0; i < N; i++) {
+                data_[i] *= t_cast;
+            }
+
+            return *this;
+        }
+
+        Vector<T, N>& operator/=(float t) {
+            T t_cast = static_cast<T>(t);
+
+            for (std::size_t i = 0; i < N; i++) {
+                data_[i] /= t_cast;
+            }
+
+            return *this;
+        }
+
+        float LengthSquared() const {
+            float norm = 0;
+
+            for (auto& elem : data_) {
+                norm += elem * elem;
+            }
+
+            return norm;
+        }
+
+        float Length() const {
+            return std::sqrt(LengthSquared());
+        }
+
+
     private:
-        std::array<double, 4> data_;
+        std::array<T, N> data_;
     };
 
-    class Vec3 {
-    public:
-        explicit Vec3(double d);
-        explicit Vec3();
+    using Vec2d = Vector<double, 2>;
+    using Vec3d = Vector<double, 3>;
+    using Vec4d = Vector<double, 4>;
+    using Vec2f = Vector<float, 2>;
+    using Vec3f = Vector<float, 3>;
+    using Vec4f = Vector<float, 4>;
+    using Vec2i = Vector<int, 2>;
+    using Vec3i = Vector<int, 3>;
+    using Vec4i = Vector<int, 4>;
 
-    private:
-        std::array<double, 3> data_;
-    };
-
-    class Vec2 {
-    public:
-        explicit Vec2(double d);
-        explicit Vec2();
-
-    private:
-        std::array<double, 2> data_;
-    };
 }
 
 

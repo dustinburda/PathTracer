@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 project(PathTracer)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 add_executable(PathTracer src/main.cpp)
 
@@ -19,7 +19,7 @@ enable_testing()
 
 add_executable(
         tst_file
-        ./test/testing.cpp
+        test/Vector_Test.cpp
 )
 target_link_libraries(
         tst_file
