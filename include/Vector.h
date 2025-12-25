@@ -1,7 +1,6 @@
 #ifndef PATHTRACER_VECTOR_H
 #define PATHTRACER_VECTOR_H
 
-
 #include <array>
 #include <cmath>
 #include <concepts>
@@ -11,8 +10,6 @@
 #include <stdexcept>
 #include <sstream>
 #include <type_traits>
-
-
 
 namespace math {
 
@@ -222,8 +219,6 @@ namespace math {
 
         return acos(cos_theta);
     }
-
-
 
     using Vec2d = Vector<double, 2>;
     using Vec3d = Vector<double, 3>;
