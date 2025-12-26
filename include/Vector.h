@@ -229,7 +229,6 @@ namespace math {
     using Vec2i = Vector<int, 2>;
     using Vec3i = Vector<int, 3>;
     using Vec4i = Vector<int, 4>;
-
 }
 
 

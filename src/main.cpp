@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "../include/Vector.h"
+#include "../include/Point.h"
 
 int main() {
     math::Vec2f v1{1.0, 1.0};
